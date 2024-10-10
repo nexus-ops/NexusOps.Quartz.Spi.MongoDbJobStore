@@ -19,15 +19,6 @@ Custom changes:
 
 Check the knowledge base for detailed instructions of package publish process.
 
-Custom changes:
-
-- Using custom version suffix for the Nugget package to indicate custom modifications to the original version. For instance, `2.2.0` -> `2.2.0-custom2`.
-- All previous/original changes are marked with comment `// ORIGINAL`.
-- All custom changes are marked with comment `// CUSTOM`.
-
-
-
-Check the knowledge base for detailed instructions of package publish process.
 
 MongoDB Job Store for Quartz.NET
 ================================
