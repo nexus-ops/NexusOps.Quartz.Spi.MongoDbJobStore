@@ -7,9 +7,9 @@ using Quartz.Spi.MongoDbJobStore.Models.Id;
 namespace Quartz.Spi.MongoDbJobStore.Repositories
 {
     [CollectionName("firedTriggers")]
-    internal class FiredTriggerRepository : BaseRepository<FiredTrigger>
+    internal sealed class FiredTriggerRepository : BaseRepository<FiredTrigger>
     {
-        public FiredTriggerRepository(IMongoDatabase database, string instanceName, string collectionPrefix = null)
+        public FiredTriggerRepository(IMongoDatabase database, string instanceName, string? collectionPrefix = null)
             : base(database, instanceName, collectionPrefix)
         {
         }

@@ -3,9 +3,9 @@ using Quartz.Spi.MongoDbJobStore.Models.Id;
 
 namespace Quartz.Spi.MongoDbJobStore.Models
 {
-    internal class PausedTriggerGroup
+    internal sealed class PausedTriggerGroup
     {
         [BsonId]
-        public PausedTriggerGroupId Id { get; set; }
+        public PausedTriggerGroupId Id { get; set; } = default!;
     }
 }

@@ -7,13 +7,24 @@ using Quartz.Spi.MongoDbJobStore.Models.Id;
 
 namespace Quartz.Spi.MongoDbJobStore.Models
 {
-    internal class FiredTrigger
+    internal sealed class FiredTrigger
     {
-        public FiredTrigger()
-        {
-        }
+        [BsonId]
+        public FiredTriggerId Id { get; set; }
+        public TriggerKey TriggerKey { get; set; }
+        public JobKey? JobKey { get; set; }
+        public string? InstanceId { get; set; }
+        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+        public DateTime Fired { get; set; }
+        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+        public DateTime? Scheduled { get; set; }
+        public int Priority { get; set; }
+        [BsonRepresentation(BsonType.String)]
+        public TriggerState State { get; set; }
+        public bool ConcurrentExecutionDisallowed { get; set; } = false;
+        public bool RequestsRecovery { get; set; } = true;
 
-        public FiredTrigger(string firedInstanceId, Trigger trigger, JobDetail jobDetail)
+        public FiredTrigger(string firedInstanceId, Trigger trigger, JobDetail? jobDetail)
         {
             Id = new FiredTriggerId(firedInstanceId, trigger.Id.InstanceName);
             TriggerKey = trigger.Id.GetTriggerKey();
@@ -30,30 +41,6 @@ namespace Quartz.Spi.MongoDbJobStore.Models
             }
         }
 
-        [BsonId]
-        public FiredTriggerId Id { get; set; }
-
-        public TriggerKey TriggerKey { get; set; }
-
-        public JobKey JobKey { get; set; }
-
-        public string InstanceId { get; set; }
-
-        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-        public DateTime Fired { get; set; }
-
-        [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-        public DateTime? Scheduled { get; set; }
-
-        public int Priority { get; set; }
-
-        [BsonRepresentation(BsonType.String)]
-        public TriggerState State { get; set; }
-
-        public bool ConcurrentExecutionDisallowed { get; set; }
-
-        public bool RequestsRecovery { get; set; }
-
         public IOperableTrigger GetRecoveryTrigger(JobDataMap jobDataMap)
         {
             var firedTime = new DateTimeOffset(Fired);
@@ -61,8 +48,8 @@ namespace Quartz.Spi.MongoDbJobStore.Models
             var recoveryTrigger = new SimpleTriggerImpl($"recover_{InstanceId}_{Guid.NewGuid()}",
                 SchedulerConstants.DefaultRecoveryGroup, scheduledTime)
             {
-                JobName = JobKey.Name,
-                JobGroup = JobKey.Group,
+                JobName = JobKey != null ? JobKey.Name : Id.FiredInstanceId,
+                JobGroup = JobKey != null ? JobKey.Group : SchedulerConstants.DefaultGroup,
                 Priority = Priority,
                 MisfireInstruction = MisfireInstruction.IgnoreMisfirePolicy,
                 JobDataMap = jobDataMap

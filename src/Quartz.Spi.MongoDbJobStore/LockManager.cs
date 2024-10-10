@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Threading;
-using System.Threading.Tasks;
-using Common.Logging;
+﻿using Common.Logging;
 using MongoDB.Driver;
+using Quartz.Spi.MongoDbJobStore.Custom;
 using Quartz.Spi.MongoDbJobStore.Models;
 using Quartz.Spi.MongoDbJobStore.Repositories;
 
@@ -13,7 +10,7 @@ namespace Quartz.Spi.MongoDbJobStore
     /// Implements a simple distributed lock on top of MongoDB. It is not a reentrant lock so you can't
     /// acquire the lock more than once in the same thread of execution.
     /// </summary>
-    internal class LockManager : IDisposable
+    internal sealed class LockManager : IDisposable
     {
         private static readonly TimeSpan SleepThreshold = TimeSpan.FromMilliseconds(1000);
 
@@ -21,8 +18,7 @@ namespace Quartz.Spi.MongoDbJobStore
 
         private readonly LockRepository _lockRepository;
 
-        private readonly ConcurrentDictionary<LockType, LockInstance> _pendingLocks =
-            new ConcurrentDictionary<LockType, LockInstance>();
+        private readonly ConcurrentList<LockInstance> _pendingLocks = [];
 
         private readonly SemaphoreSlim _pendingLocksSemaphore = new SemaphoreSlim(1);
 
@@ -39,9 +35,9 @@ namespace Quartz.Spi.MongoDbJobStore
 
             _disposed = true;
             var locks = _pendingLocks.ToArray();
-            foreach (var keyValuePair in locks)
+            foreach (var _lock in locks)
             {
-                keyValuePair.Value.Dispose();
+                _lock.Dispose();
             }
         }
 
@@ -50,7 +46,6 @@ namespace Quartz.Spi.MongoDbJobStore
             while (true)
             {
                 EnsureObjectNotDisposed();
-
                 await _pendingLocksSemaphore.WaitAsync();
                 try
                 {
@@ -58,7 +53,6 @@ namespace Quartz.Spi.MongoDbJobStore
                     {
                         var lockInstance = new LockInstance(this, lockType, instanceId);
                         AddLock(lockInstance);
-
                         return lockInstance;
                     }
                 }
@@ -77,8 +71,10 @@ namespace Quartz.Spi.MongoDbJobStore
             try
             {
 
-                _lockRepository.ReleaseLock(lockInstance.LockType, lockInstance.InstanceId).ConfigureAwait(false).GetAwaiter().GetResult();
-                
+                _lockRepository.ReleaseLock(lockInstance.LockType, lockInstance.InstanceId)
+                    .ConfigureAwait(false)
+                    .GetAwaiter()
+                    .GetResult();
                 LockReleased(lockInstance);
             }
             finally
@@ -97,17 +93,20 @@ namespace Quartz.Spi.MongoDbJobStore
 
         private void AddLock(LockInstance lockInstance)
         {
-            if (!_pendingLocks.TryAdd(lockInstance.LockType, lockInstance))
+            if (_pendingLocks.Contains(lockInstance))
             {
-                throw new Exception($"Unable to add lock instance for lock {lockInstance.LockType} on {lockInstance.InstanceId}");
+                throw new Exception(
+                    $"Same lock instance for lock {lockInstance.LockType} on {lockInstance.InstanceId} already exists");
             }
+            _pendingLocks.Add(lockInstance);
         }
 
         private void LockReleased(LockInstance lockInstance)
         {
-            if (!_pendingLocks.TryRemove(lockInstance.LockType, out _))
+            if (!_pendingLocks.Remove(lockInstance))
             {
-                Log.Warn($"Unable to remove pending lock {lockInstance.LockType} on {lockInstance.InstanceId}");
+                Log.Warn(
+                    $"Unable to remove pending lock {lockInstance.LockType} on {lockInstance.InstanceId}");
             }
         }
 

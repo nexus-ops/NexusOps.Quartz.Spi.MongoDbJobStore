@@ -1,6 +1,6 @@
 ﻿namespace Quartz.Spi.MongoDbJobStore.Models.Id
 {
-    internal class JobDetailId : BaseKeyId
+    internal sealed class JobDetailId : BaseKeyId
     {
         public JobDetailId()
         {

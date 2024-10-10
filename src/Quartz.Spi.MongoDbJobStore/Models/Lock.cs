@@ -10,15 +10,15 @@ namespace Quartz.Spi.MongoDbJobStore.Models
         StateAccess
     }
 
-    internal class Lock
+    internal sealed class Lock
     {
         public const string TriggerAccess = "TRIGGER_ACCESS";
         public const string StateAccess = "STATE_ACCESS";
 
         [BsonId]
-        public LockId Id { get; set; }
+        public LockId Id { get; set; } = default!;
 
-        public string InstanceId { get; set; }
+        public string InstanceId { get; set; } = default!;
 
         public DateTime AquiredAt { get; set; }
     }

@@ -1,6 +1,5 @@
-using System.IO;
+﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-
 using Quartz.Spi;
 
 namespace Quartz.Simpl
@@ -12,8 +11,16 @@ namespace Quartz.Simpl
     /// <author>Marko Lahma</author>
     public class DefaultObjectSerializer : IObjectSerializer
     {
+        private readonly IObjectSerializer _objectSerializer = new JsonObjectSerializer();
+
+        public DefaultObjectSerializer()
+        {
+            _objectSerializer.Initialize();
+        }
+
         public void Initialize()
         {
+            _objectSerializer.Initialize();
         }
 
         /// <summary>
@@ -23,25 +30,31 @@ namespace Quartz.Simpl
         /// <param name="obj">Object to serialize.</param>
         public byte[] Serialize<T>(T obj) where T : class
         {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                BinaryFormatter bf = new BinaryFormatter();
-                bf.Serialize(ms, obj);
-                return ms.ToArray();
-            }
+            //using (MemoryStream ms = new MemoryStream())
+            //{
+            //    BinaryFormatter bf = new BinaryFormatter();
+            //    bf.Serialize(ms, obj);
+            //    return ms.ToArray();
+            //}
+
+            // CUSTOM
+            return _objectSerializer.Serialize(obj);
         }
 
         /// <summary>
         /// Deserializes object from byte array presentation.
         /// </summary>
         /// <param name="data">Data to deserialize object from.</param>
-        public T DeSerialize<T>(byte[] data) where T : class
+        public T? DeSerialize<T>(byte[] data) where T : class
         {
-            using (MemoryStream ms = new MemoryStream(data))
-            {
-                BinaryFormatter bf = new BinaryFormatter();
-                return (T)bf.Deserialize(ms);
-            }
+            //using (MemoryStream ms = new MemoryStream(data))
+            //{
+            //    BinaryFormatter bf = new BinaryFormatter();
+            //    return (T)bf.Deserialize(ms);
+            //}
+
+            // CUSTOM
+            return _objectSerializer.DeSerialize<T>(data);
         }
     }
 }

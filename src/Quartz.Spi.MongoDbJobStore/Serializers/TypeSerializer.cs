@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Serializers;
 
 namespace Quartz.Spi.MongoDbJobStore.Serializers
 {
-    internal class TypeSerializer : SerializerBase<Type>
+    internal sealed class TypeSerializer : SerializerBase<Type>
     {
         public override void Serialize(BsonSerializationContext context, BsonSerializationArgs args, Type value)
         {
@@ -14,7 +14,7 @@ namespace Quartz.Spi.MongoDbJobStore.Serializers
         public override Type Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
         {
             var value = context.Reader.ReadString();
-            return Type.GetType(value);
+            return Type.GetType(value)!;
         }
     }
 }

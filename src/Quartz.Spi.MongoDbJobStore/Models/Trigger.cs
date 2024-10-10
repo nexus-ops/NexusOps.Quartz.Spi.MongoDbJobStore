@@ -38,24 +38,24 @@ namespace Quartz.Spi.MongoDbJobStore.Models
                 Name = trigger.Key.Name
             };
             JobKey = trigger.JobKey;
-            Description = trigger.Description;
+            Description = trigger.Description ?? default!;
             NextFireTime = trigger.GetNextFireTimeUtc()?.UtcDateTime;
             PreviousFireTime = trigger.GetPreviousFireTimeUtc()?.UtcDateTime;
             State = state;
             StartTime = trigger.StartTimeUtc.UtcDateTime;
             EndTime = trigger.EndTimeUtc?.UtcDateTime;
-            CalendarName = trigger.CalendarName;
+            CalendarName = trigger.CalendarName ?? default!;
             MisfireInstruction = trigger.MisfireInstruction;
             Priority = trigger.Priority;
             JobDataMap = trigger.JobDataMap;
         }
 
         [BsonId]
-        public TriggerId Id { get; set; }
+        public TriggerId Id { get; set; } = default!;
 
-        public JobKey JobKey { get; set; }
+        public JobKey JobKey { get; set; } = default!;
 
-        public string Description { get; set; }
+        public string Description { get; set; } = default!;
 
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime? NextFireTime { get; set; }
@@ -72,15 +72,15 @@ namespace Quartz.Spi.MongoDbJobStore.Models
         [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
         public DateTime? EndTime { get; set; }
 
-        public string CalendarName { get; set; }
+        public string CalendarName { get; set; } = default!;
 
         public int MisfireInstruction { get; set; }
 
         public int Priority { get; set; }
 
-        public string Type { get; set; }
+        public string Type { get; set; } = default!;
 
-        public JobDataMap JobDataMap { get; set; }
+        public JobDataMap JobDataMap { get; set; } = default!;
 
         public abstract ITrigger GetTrigger();
 

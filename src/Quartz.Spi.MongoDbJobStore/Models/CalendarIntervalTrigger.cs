@@ -5,10 +5,11 @@ using Quartz.Impl.Triggers;
 
 namespace Quartz.Spi.MongoDbJobStore.Models
 {
-    internal class CalendarIntervalTrigger : Trigger
+    internal sealed class CalendarIntervalTrigger : Trigger
     {
         public CalendarIntervalTrigger()
         {
+            TimeZone = TimeZoneInfo.Utc.Id;
         }
 
         public CalendarIntervalTrigger(ICalendarIntervalTrigger trigger, TriggerState state, string instanceName)

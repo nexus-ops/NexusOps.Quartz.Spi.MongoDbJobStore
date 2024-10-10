@@ -1,7 +1,9 @@
 ﻿namespace Quartz.Spi.MongoDbJobStore.Models.Id
 {
-    internal class PausedTriggerGroupId : BaseId
+    internal sealed class PausedTriggerGroupId : BaseId
     {
+        public string Group { get; set; } = string.Empty;
+
         public PausedTriggerGroupId()
         {
         }
@@ -11,7 +13,5 @@
             InstanceName = instanceName;
             Group = group;
         }
-
-        public string Group { get; set; }
     }
 }

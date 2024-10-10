@@ -1,4 +1,4 @@
-#region License
+﻿#region License
 /* 
  * All content copyright Terracotta, Inc., unless otherwise indicated. All rights reserved. 
  * 
@@ -45,14 +45,14 @@ namespace Quartz
         /// <summary>
         /// The instance of System.Threading.Thread
         /// </summary>
-        private readonly Thread thread;
+        private readonly Thread _thread;
 
         /// <summary>
         /// Initializes a new instance of the QuartzThread class
         /// </summary>
         protected QuartzThread()
         {
-            thread = new Thread(Run);
+            _thread = new Thread(Run);
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace Quartz
         /// <param name="name">The name of the thread</param>
         protected QuartzThread(string name)
         {
-            thread = new Thread(Run);
+            _thread = new Thread(Run);
             Name = name;
         }
 
@@ -77,7 +77,7 @@ namespace Quartz
         /// </summary>
         public void Start()
         {
-            thread.Start();
+            _thread.Start();
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace Quartz
         /// </summary>
         protected void Interrupt()
         {
-            thread.Interrupt();
+            _thread.Interrupt();
         }
 
         /// <summary>
@@ -93,10 +93,10 @@ namespace Quartz
         /// </summary>
         public string Name
         {
-            get { return thread.Name; }
+            get { return _thread.Name ?? default!; }
             protected set
             {
-                thread.Name = value;
+                _thread.Name = value;
             }
         }
 
@@ -105,8 +105,8 @@ namespace Quartz
         /// </summary>
         protected ThreadPriority Priority
         {
-            get { return thread.Priority; }
-            set { thread.Priority = value; }
+            get { return _thread.Priority; }
+            set { _thread.Priority = value; }
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace Quartz
         /// </summary>
         protected bool IsBackground
         {
-            set { thread.IsBackground = value; }
+            set { _thread.IsBackground = value; }
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace Quartz
         /// </summary>
         public void Join()
         {
-            thread.Join();
+            _thread.Join();
         }
 
         /// <summary>

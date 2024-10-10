@@ -6,10 +6,23 @@ using Quartz.Impl.Triggers;
 
 namespace Quartz.Spi.MongoDbJobStore.Models
 {
-    internal class DailyTimeIntervalTrigger : Trigger
+    internal sealed class DailyTimeIntervalTrigger : Trigger
     {
         public DailyTimeIntervalTrigger()
         {
+            TimeZone = TimeZoneInfo.Utc.Id;
+            StartTimeOfDay = TimeOfDay.HourAndMinuteOfDay(0, 0);
+            EndTimeOfDay = TimeOfDay.HourAndMinuteOfDay(23, 59);
+            DaysOfWeek = new HashSet<DayOfWeek>(
+                new DayOfWeek[] {
+                    DayOfWeek.Monday,
+                    DayOfWeek.Tuesday,
+                    DayOfWeek.Wednesday,
+                    DayOfWeek.Thursday,
+                    DayOfWeek.Friday,
+                    DayOfWeek.Saturday,
+                    DayOfWeek.Sunday
+                });
         }
 
         public DailyTimeIntervalTrigger(IDailyTimeIntervalTrigger trigger, TriggerState state, string instanceName)

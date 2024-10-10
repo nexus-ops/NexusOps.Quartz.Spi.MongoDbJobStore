@@ -2,7 +2,7 @@
 {
     internal abstract class BaseKeyId : BaseId
     {
-        public string Name { get; set; }
-        public string Group { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Group { get; set; } = string.Empty;
     }
 }

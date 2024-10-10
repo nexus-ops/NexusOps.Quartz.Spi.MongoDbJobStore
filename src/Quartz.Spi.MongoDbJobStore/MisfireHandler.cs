@@ -5,7 +5,7 @@ using Quartz.Impl.AdoJobStore;
 
 namespace Quartz.Spi.MongoDbJobStore
 {
-    internal class MisfireHandler : QuartzThread
+    internal sealed class MisfireHandler : QuartzThread
     {
         private static readonly ILog Log = LogManager.GetLogger<MisfireHandler>();
 

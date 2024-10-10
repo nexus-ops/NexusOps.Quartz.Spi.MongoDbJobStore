@@ -6,9 +6,9 @@ using Quartz.Spi.MongoDbJobStore.Models.Id;
 namespace Quartz.Spi.MongoDbJobStore.Repositories
 {
     [CollectionName("schedulers")]
-    internal class SchedulerRepository : BaseRepository<Scheduler>
+    internal sealed class SchedulerRepository : BaseRepository<Scheduler>
     {
-        public SchedulerRepository(IMongoDatabase database, string instanceName, string collectionPrefix = null)
+        public SchedulerRepository(IMongoDatabase database, string instanceName, string? collectionPrefix = null)
             : base(database, instanceName, collectionPrefix)
         {
         }
@@ -16,7 +16,7 @@ namespace Quartz.Spi.MongoDbJobStore.Repositories
         public async Task AddScheduler(Scheduler scheduler)
         {
             await Collection.ReplaceOneAsync(sch => sch.Id == scheduler.Id,
-                scheduler, new UpdateOptions()
+                scheduler, new ReplaceOptions()
                 {
                     IsUpsert = true
                 }).ConfigureAwait(false);

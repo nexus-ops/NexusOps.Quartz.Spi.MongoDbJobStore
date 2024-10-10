@@ -2,6 +2,6 @@
 {
     internal abstract class BaseId
     {
-        public string InstanceName { get; set; }
+        public string InstanceName { get; set; } = string.Empty;
     }
 }

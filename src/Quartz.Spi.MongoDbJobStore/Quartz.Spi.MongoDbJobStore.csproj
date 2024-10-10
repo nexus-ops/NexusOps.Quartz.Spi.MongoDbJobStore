@@ -1,15 +1,60 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- ORIGINAL -->
+  <!-- <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup> -->
+
+  <!-- CUSTOM -->
   <PropertyGroup>
-    <TargetFrameworks>net452;net462;netstandard2.0</TargetFrameworks>
-    <AssemblyName>Quartz.Spi.MongoDbJobStore</AssemblyName>
-    <IsPackable>true</IsPackable>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>NexusOps.Quartz.Spi.MongoDbJobStore</PackageId>
+    <ApplicationIcon />
+    <OutputType>Library</OutputType>
+    <StartupObject />
+    <Company>NexusOps</Company>
+    <Authors>NexusOps; Vadym Berkut; Gabriel Lucaci</Authors>
+    <Owners>NexusOps</Owners>
+    <Copyright>Original code by Gabriel Lucaci, modified by NexusOps in 2024.</Copyright>
+    <PackageProjectUrl>https://github.com/nexus-ops/NexusOps.Quartz.Spi.MongoDbJobStore</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/nexus-ops/NexusOps.Quartz.Spi.MongoDbJobStore</RepositoryUrl>
+    <Description>
+      MongoDbMigrations uses the official MongoDB C# Driver to migrate your documents in your mongo database via useful fluent API.
+      Supports up and down migrations with cancelation and progress handling. Also, this library is able to check a schema of collections in your database during the migration run.
+      This version supports on-premise Mongo database either Azure CosmosDB (with Mongo-like API) or even AWS DocumentDB. In addition you can use TLS and/or SHH tunnels in your migrations.
+      PS1 script for integration with CI/CD pipelines provides inside of the repository.
+
+      Release notes - https://github.com/nexus-ops/NexusOps.Quartz.Spi.MongoDbJobStore/src/master/ReleaseNotes.md
+    </Description>
+    <PackageTags>mongo mongodb migration schema-migration csharp dotnet schema migrator database-migration database .net fluent api ci/cd azure cosmos cosmosdb aws documentdb</PackageTags>
+    <PackageReleaseNotes>
+      This is a modified version of the original package by Gabriel Lucaci.
+
+      Modified by NexusOps to include new features and fixes.
+      Release notes - https://github.com/nexus-ops/NexusOps.Quartz.Spi.MongoDbJobStore/src/master/ReleaseNotes.md
+    </PackageReleaseNotes>
+    <Version>3.1.0-custom1</Version>
+    <PackageLicenseUrl></PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <!-- <PackageLicenseFile>LICENSE.txt</PackageLicenseFile> -->
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <SynchReleaseVersion>false</SynchReleaseVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Enable .NET code style analysis on build (includes settings from .editorconfig) -->
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MongoDB.Driver" Version="2.4.2" />
-    <PackageReference Include="Quartz" Version="3.0.4" />
+    <PackageReference Include="MongoDB.Driver" Version="2.29.0" />
+    <PackageReference Include="Quartz" Version="3.13.0" />
     <PackageReference Include="Common.Logging" Version="3.4.1" />
+    <PackageReference Include="Quartz.Serialization.Json" Version="3.13.0" />
   </ItemGroup>
 
 </Project>

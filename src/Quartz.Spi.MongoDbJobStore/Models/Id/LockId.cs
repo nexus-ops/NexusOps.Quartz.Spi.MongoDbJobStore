@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Quartz.Spi.MongoDbJobStore.Models.Id
 {
-    internal class LockId : BaseId
+    internal sealed class LockId : BaseId
     {
         public LockId() { }
 

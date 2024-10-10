@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Serializers;
 
 namespace Quartz.Spi.MongoDbJobStore.Serializers
 {
-    internal class SetSerializer<T> : SerializerBase<ISet<T>>
+    internal sealed class SetSerializer<T> : SerializerBase<ISet<T>>
     {
         private readonly IBsonSerializer _serializer;
 

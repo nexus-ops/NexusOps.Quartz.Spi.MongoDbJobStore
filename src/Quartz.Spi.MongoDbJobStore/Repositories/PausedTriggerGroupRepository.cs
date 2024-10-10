@@ -9,9 +9,9 @@ using Quartz.Spi.MongoDbJobStore.Models.Id;
 namespace Quartz.Spi.MongoDbJobStore.Repositories
 {
     [CollectionName("pausedTriggerGroups")]
-    internal class PausedTriggerGroupRepository : BaseRepository<PausedTriggerGroup>
+    internal sealed class PausedTriggerGroupRepository : BaseRepository<PausedTriggerGroup>
     {
-        public PausedTriggerGroupRepository(IMongoDatabase database, string instanceName, string collectionPrefix = null)
+        public PausedTriggerGroupRepository(IMongoDatabase database, string instanceName, string? collectionPrefix = null)
             : base(database, instanceName, collectionPrefix)
         {
         }

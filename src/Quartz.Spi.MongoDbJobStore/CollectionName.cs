@@ -7,7 +7,7 @@ namespace Quartz.Spi.MongoDbJobStore
     ///     is not specified, the classname will be used.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    internal class CollectionName : Attribute
+    internal sealed class CollectionName : Attribute
     {
         /// <summary>
         ///     Initializes a new instance of the CollectionName class attribute with the desired name.

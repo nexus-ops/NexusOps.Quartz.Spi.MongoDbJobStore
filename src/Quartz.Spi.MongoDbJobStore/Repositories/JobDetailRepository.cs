@@ -10,9 +10,9 @@ using Quartz.Spi.MongoDbJobStore.Models.Id;
 namespace Quartz.Spi.MongoDbJobStore.Repositories
 {
     [CollectionName("jobs")]
-    internal class JobDetailRepository : BaseRepository<JobDetail>
+    internal sealed class JobDetailRepository : BaseRepository<JobDetail>
     {
-        public JobDetailRepository(IMongoDatabase database, string instanceName, string collectionPrefix = null)
+        public JobDetailRepository(IMongoDatabase database, string instanceName, string? collectionPrefix = null)
             : base(database, instanceName, collectionPrefix)
         {
         }
@@ -24,12 +24,23 @@ namespace Quartz.Spi.MongoDbJobStore.Repositories
 
         public async Task<List<JobKey>> GetJobsKeys(GroupMatcher<JobKey> matcher)
         {
-            return
+            //// ORIGINAL. Error: Expression not supported: detail.Id.GetJobKey().
+            //return
+            //    await Collection.Find(FilterBuilder.And(
+            //        FilterBuilder.Eq(detail => detail.Id.InstanceName, InstanceName),
+            //        FilterBuilder.Regex(detail => detail.Id.Group, matcher.ToBsonRegularExpression())))
+            //        .Project(detail => detail.Id.GetJobKey()) // OLD. Error: Expression not supported: detail.Id.GetJobKey().
+            //        .ToListAsync().ConfigureAwait(false);
+
+            // CUSTOM
+            var result = 
                 await Collection.Find(FilterBuilder.And(
                     FilterBuilder.Eq(detail => detail.Id.InstanceName, InstanceName),
                     FilterBuilder.Regex(detail => detail.Id.Group, matcher.ToBsonRegularExpression())))
-                    .Project(detail => detail.Id.GetJobKey())
+                    .Project(detail => detail.Id)
                     .ToListAsync().ConfigureAwait(false);
+            var jobKeys = result.Select(x => x.GetJobKey()).ToList();
+            return jobKeys;
         }
 
         public async Task<IEnumerable<string>> GetJobGroupNames()
@@ -48,7 +59,7 @@ namespace Quartz.Spi.MongoDbJobStore.Repositories
         {
             var result = await Collection.ReplaceOneAsync(detail => detail.Id == jobDetail.Id,
                 jobDetail,
-                new UpdateOptions
+                new ReplaceOptions
                 {
                     IsUpsert = upsert
                 }).ConfigureAwait(false);
@@ -74,7 +85,9 @@ namespace Quartz.Spi.MongoDbJobStore.Repositories
 
         public async Task<long> GetCount()
         {
-            return await Collection.Find(detail => detail.Id.InstanceName == InstanceName).CountAsync().ConfigureAwait(false);
+            return await Collection.Find(detail => detail.Id.InstanceName == InstanceName)
+                .CountDocumentsAsync()
+                .ConfigureAwait(false);
         }
     }
 }

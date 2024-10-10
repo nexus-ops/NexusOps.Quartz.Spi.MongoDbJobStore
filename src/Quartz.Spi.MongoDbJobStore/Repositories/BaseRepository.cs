@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Common.Logging;
+﻿using Common.Logging;
 using MongoDB.Driver;
 
 namespace Quartz.Spi.MongoDbJobStore.Repositories
 {
     internal abstract class BaseRepository<TDocument>
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof (BaseRepository<>));
-        private static readonly HashSet<string> InitializedCollections = new HashSet<string>();
+        private static readonly ILog _log = LogManager.GetLogger(typeof (BaseRepository<>));
+        private static readonly HashSet<string> _initializedCollections = new ();
 
-        protected BaseRepository(IMongoDatabase database, string instanceName, string collectionPrefix = null)
+        protected BaseRepository(IMongoDatabase database, string instanceName, string? collectionPrefix = null)
         {
             InstanceName = instanceName;
             var collectionName = GetCollectionName();
@@ -64,20 +61,20 @@ namespace Quartz.Spi.MongoDbJobStore.Repositories
 
         private void EnsureIndexesCreated(string collectionName)
         {
-            if (InitializedCollections.Contains(collectionName))
+            if (_initializedCollections.Contains(collectionName))
             {
                 return;
             }
 
-            lock (InitializedCollections)
+            lock (_initializedCollections)
             {
-                if (InitializedCollections.Contains(collectionName))
+                if (_initializedCollections.Contains(collectionName))
                 {
                     return;
                 }
-                Log.Trace($"Building index for {collectionName}");
+                _log.Trace($"Building index for {collectionName}");
                 EnsureIndex();
-                InitializedCollections.Add(collectionName);
+                _initializedCollections.Add(collectionName);
             }
         }
     }

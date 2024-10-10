@@ -1,6 +1,6 @@
 namespace Quartz.Spi.MongoDbJobStore.Models.Id
 {
-    internal class TriggerId : BaseKeyId
+    internal sealed class TriggerId : BaseKeyId
     {
         public TriggerId() { }
 

@@ -13,10 +13,10 @@ namespace Quartz.Spi.MongoDbJobStore.Models
         Resumed
     }
 
-    internal class Scheduler
+    internal sealed class Scheduler
     {
         [BsonId]
-        public SchedulerId Id { get; set; }
+        public SchedulerId Id { get; set; } = default!;
 
         [BsonRepresentation(BsonType.String)]
         public SchedulerState State { get; set; }

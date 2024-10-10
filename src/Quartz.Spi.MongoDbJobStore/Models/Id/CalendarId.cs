@@ -1,9 +1,10 @@
 ﻿namespace Quartz.Spi.MongoDbJobStore.Models.Id
 {
-    internal class CalendarId : BaseId
+    internal sealed class CalendarId : BaseId
     {
         public CalendarId()
         {
+            CalendarName = string.Empty;
         }
 
         public CalendarId(string calendarName, string instanceName)

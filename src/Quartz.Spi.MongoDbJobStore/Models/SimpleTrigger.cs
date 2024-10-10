@@ -3,7 +3,7 @@ using Quartz.Impl.Triggers;
 
 namespace Quartz.Spi.MongoDbJobStore.Models
 {
-    internal class SimpleTrigger : Trigger
+    internal sealed class SimpleTrigger : Trigger
     {
         public SimpleTrigger()
         {
